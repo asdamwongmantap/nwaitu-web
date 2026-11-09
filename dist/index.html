@@ -3,42 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nawaitu: Teman Ibadah Harian</title>
-<meta name="description" content="Jadwal sholat per kota, kajian islami, dan artikel. Teman ibadah harian Anda.">
+<title>Nawaitu: Teman ibadah harian Anda</title>
+<meta name="description" content="Nawaitu, teman ibadah harian Anda. Jadwal shalat (sholat) per kota, kajian islami, dan artikel. Aplikasi Android dengan adzan dan tracker puasa.">
 <link rel="canonical" href="https://domainanda.com/">
-<meta property="og:title" content="Nawaitu: Teman Ibadah Harian">
-<meta property="og:description" content="Jadwal sholat per kota, kajian islami, dan artikel. Teman ibadah harian Anda.">
+<meta property="og:title" content="Nawaitu: Teman ibadah harian Anda">
+<meta property="og:description" content="Nawaitu, teman ibadah harian Anda. Jadwal shalat (sholat) per kota, kajian islami, dan artikel. Aplikasi Android dengan adzan dan tracker puasa.">
 <meta property="og:url" content="https://domainanda.com/">
 <meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="Nawaitu">
+<meta property="og:type" content="website">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Nawaitu: Teman ibadah harian Anda">
+<meta name="application-name" content="Nawaitu">
+<meta property="og:image" content="https://domainanda.com/img/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Nawaitu","url":"https://domainanda.com/","inLanguage":"id","description":"Nawaitu, teman ibadah harian Anda. Jadwal shalat (sholat) per kota, kajian islami, dan artikel. Aplikasi Android dengan adzan dan tracker puasa."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Nawaitu","url":"https://domainanda.com/","logo":"https://domainanda.com/img/icon-512.png","slogan":"Teman ibadah harian Anda"}</script>
 </head>
 <body data-base="" data-mode="beranda">
 <header class="top"><div class="wrap">
-  <a class="logo" href="/">Nawaitu</a>
-  <nav aria-label="Menu utama"><a href="/" aria-current="page">Beranda</a><a href="/jadwal-sholat/jakarta/">Jadwal Sholat</a><a href="/kajian/">Kajian</a><a href="/artikel/">Artikel</a></nav>
+  <a class="logo" href="/"><img src="/img/logo.png" alt="" width="22" height="28">Nawaitu</a>
+  <nav aria-label="Menu utama"><a href="/" aria-current="page">Beranda</a><a href="/jadwal-sholat/jakarta/">Jadwal Shalat</a><a href="/kajian/">Kajian</a><a href="/artikel/">Artikel</a></nav>
 </div></header>
-<section class="hero"><div class="wrap">
-  <div>
-    <div class="label">Waktu sholat berikutnya</div>
+<section class="hero"><div class="wrap hero-grid">
+  <div class="hero-kiri">
+    <h1 class="brand">Nawaitu</h1><p class="tagline">Teman ibadah harian Anda</p>
+    <div class="label">Waktu shalat berikutnya</div>
     <div class="nama-next" id="nama-next">…</div>
     <div class="sub" id="tanggal"></div>
-    <p><label for="kota" class="sub">Kota </label><select id="kota"></select></p>
+    <p class="pilih-kota"><label for="kota">Kota</label><select id="kota"></select></p>
   </div>
-  <div>
+  <div class="kartu-hitung">
     <div class="label">Tersisa</div>
     <div class="count" id="hitung">--:--:--</div>
+    <div class="progres" aria-hidden="true"><span id="progres"></span></div>
+    <div class="progres-ket"><span id="prog-kiri"></span><span id="prog-kanan"></span></div>
     <div class="sub" id="jam-next"></div>
   </div>
 </div></section>
-<noscript><div class="wrap catatan">Aktifkan JavaScript untuk melihat jadwal sholat hari ini.</div></noscript><main class="wrap">
+<noscript><div class="wrap catatan">Aktifkan JavaScript untuk melihat jadwal shalat hari ini.</div></noscript><main class="wrap">
   <h2>Jadwal hari ini</h2><div class="waktu" id="waktu-hari"></div>
-  <p class="muted"><a href="/jadwal-sholat/jakarta/">Jadwal 7 hari per kota</a></p>
+  <p class="muted lanjut"><a href="/jadwal-sholat/jakarta/">Lihat jadwal 7 hari →</a></p>
+  <div class="menu-cepat">
+    <a href="/jadwal-sholat/jakarta/"><b>Jadwal Shalat</b><span>7 kota, 7 hari ke depan, dihitung di perangkat Anda.</span></a>
+    <a href="/kajian/"><b>Kajian</b><span>Temukan kajian islami terdekat: pemateri, waktu, dan lokasi.</span></a>
+    <a href="/artikel/"><b>Artikel</b><span>Niat, tata cara, dan doa ibadah sehari-hari secara ringkas.</span></a>
+  </div>
+  <h2>Pilih kota</h2>
+  <div class="chips kota-list"><a class="chip" href="/jadwal-sholat/jakarta/">Jakarta</a><a class="chip" href="/jadwal-sholat/bandung/">Bandung</a><a class="chip" href="/jadwal-sholat/semarang/">Semarang</a><a class="chip" href="/jadwal-sholat/yogyakarta/">Yogyakarta</a><a class="chip" href="/jadwal-sholat/surabaya/">Surabaya</a><a class="chip" href="/jadwal-sholat/medan/">Medan</a><a class="chip" href="/jadwal-sholat/makassar/">Makassar</a></div>
   <h2>Kajian terdekat</h2>
   <div class="grid"><a class="card" href="/kajian/contoh-kajian-fiqih-puasa/" data-tanggal="2026-12-05" data-kota="jakarta">
   <span class="tag contoh">Contoh</span><h3>Kajian Fiqih Puasa Sunnah (contoh)</h3>
   <div>Nama pemateri</div><div class="muted">Sabtu, 5 Desember 2026 · 19:30 WIB</div><div class="muted">Nama masjid, alamat</div></a></div>
-  <h2>Artikel</h2><div class="grid"><a class="card" href="/artikel/niat-sholat-subuh/"><h3>Niat Sholat Subuh</h3><div class="muted">Lafaz niat dan hal yang perlu dipahami tentang niat.</div></a><a class="card" href="/artikel/rukun-wudhu/"><h3>Rukun Wudhu Menurut Mazhab Syafi'i</h3><div class="muted">Enam rukun wudhu yang harus terpenuhi agar wudhu sah.</div></a></div><div class="cta"><strong>Pengingat adzan, tracker sholat, dan fitur ibadah lainnya ada di aplikasi Nawaitu (Android).</strong></div></main>
-<footer><div class="wrap">© 2026 Nawaitu. Jadwal sholat dihitung di perangkat Anda dan bisa berbeda 1 sampai 3 menit dari jadwal resmi Kemenag RI.</div></footer>
+  <h2>Artikel</h2><div class="grid"><a class="card" href="/artikel/niat-sholat-subuh/"><h3>Niat Shalat Subuh</h3><div class="muted">Lafaz niat dan hal yang perlu dipahami tentang niat.</div></a><a class="card" href="/artikel/rukun-wudhu/"><h3>Rukun Wudhu Menurut Mazhab Syafi'i</h3><div class="muted">Enam rukun wudhu yang harus terpenuhi agar wudhu sah.</div></a></div><div class="cta"><div><strong>Ibadah lebih tertata dengan aplikasi Nawaitu (Android)</strong>
+  <ul><li>Pengingat adzan</li><li>Tracker shalat</li><li>Puasa</li><li>Zakat</li><li>Dzikir</li></ul></div></div></main>
+<footer><div class="wrap">© 2026 Nawaitu. Jadwal shalat dihitung di perangkat Anda dan bisa berbeda 1 sampai 3 menit dari jadwal resmi Kemenag RI.</div></footer>
 <script src="/js/data.js"></script>
 <script src="/js/shalat.js"></script>
 <script src="/js/app.js"></script>

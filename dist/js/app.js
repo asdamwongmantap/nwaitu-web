@@ -42,9 +42,16 @@
       target = jadwalHari(k, new Date(now.getTime() + 864e5)).Subuh + 1440;
       next = 'Subuh';
     }
+    const sebelum = WAJIB.filter((n) => j[n] <= menit).pop();
+    const mulai = sebelum ? j[sebelum] : jadwalHari(k, new Date(now.getTime() - 864e5)).Isya - 1440;
+    const nSebelum = sebelum || 'Isya';
+    const persen = Math.min(100, Math.max(0, ((menit - mulai) / (target - mulai)) * 100));
     const sisa = Math.max(0, Math.round((target - menit) * 60));
     $('#nama-next').textContent = next;
     $('#hitung').textContent = `${pad(Math.floor(sisa / 3600))}:${pad(Math.floor((sisa % 3600) / 60))}:${pad(sisa % 60)}`;
+    $('#progres').style.width = `${persen.toFixed(1)}%`;
+    $('#prog-kiri').textContent = `${nSebelum} ${fmt(((mulai % 1440) + 1440) % 1440)}`;
+    $('#prog-kanan').textContent = `${next} ${fmt(target % 1440)}`;
     $('#jam-next').textContent = `Pukul ${fmt(target % 1440)} ${k.zona} di ${k.nama}`;
     $('#tanggal').textContent = `${HARI[now.getUTCDay()]}, ${now.getUTCDate()} ${BULAN[now.getUTCMonth()]} ${now.getUTCFullYear()} · ${tanggalHijriah(now)}`;
     const kotak = $('#waktu-hari');

@@ -2,6 +2,9 @@
 const DATA = {
   situs: {
     nama: 'Nawaitu',
+    tagline: 'Teman ibadah harian Anda',
+    // Dipakai sebagai deskripsi beranda (meta description, idealnya 120-160 karakter).
+    deskripsi: 'Nawaitu, teman ibadah harian Anda. Jadwal shalat (sholat) per kota, kajian islami, dan artikel. Aplikasi Android dengan adzan dan tracker puasa.',
     url: 'https://domainanda.com', // ganti dengan domain Anda (tanpa garis miring di akhir)
     playStore: '',                 // tempel tautan Play Store bila sudah ada
   },
@@ -32,15 +35,15 @@ const DATA = {
   // Tinjau isinya bersama ustadz sebelum dipublikasikan.
   artikel: [
     {
-      slug: 'niat-sholat-subuh', judul: 'Niat Sholat Subuh',
+      slug: 'niat-sholat-subuh', judul: 'Niat Shalat Subuh',
       ringkas: 'Lafaz niat dan hal yang perlu dipahami tentang niat.',
       isi: `
-<p>Niat adalah tekad di dalam hati untuk mengerjakan sholat tertentu. Melafazkannya dianjurkan sebagian ulama untuk membantu hati, tetapi pokoknya adalah niat di hati.</p>
+<p>Niat adalah tekad di dalam hati untuk mengerjakan shalat tertentu. Melafazkannya dianjurkan sebagian ulama untuk membantu hati, tetapi pokoknya adalah niat di hati.</p>
 <p class="arab">أُصَلِّي فَرْضَ الصُّبْحِ رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ أَدَاءً لِلَّهِ تَعَالَى</p>
 <p><i>Ushalli fardhash shubhi rak'ataini mustaqbilal qiblati adaa-an lillaahi ta'aalaa.</i></p>
-<p>Artinya: "Aku berniat sholat fardhu Subuh dua rakaat menghadap kiblat, tepat waktu, karena Allah Ta'ala."</p>
+<p>Artinya: "Aku berniat shalat fardhu Subuh dua rakaat menghadap kiblat, tepat waktu, karena Allah Ta'ala."</p>
 <h2>Yang perlu diingat</h2>
-<ul><li>Sholat Subuh dua rakaat.</li><li>Niat dilakukan bersamaan dengan takbiratul ihram.</li><li>Sebagai makmum, tambahkan niat sebagai makmum.</li></ul>`,
+<ul><li>Shalat Subuh dua rakaat.</li><li>Niat dilakukan bersamaan dengan takbiratul ihram.</li><li>Sebagai makmum, tambahkan niat sebagai makmum.</li></ul>`,
     },
     {
       slug: 'rukun-wudhu', judul: "Rukun Wudhu Menurut Mazhab Syafi'i",

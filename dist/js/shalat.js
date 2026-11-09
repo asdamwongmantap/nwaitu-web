@@ -1,4 +1,4 @@
-// Perhitungan waktu sholat dari koordinat. Dipakai di browser (hitung mundur dan tabel).
+// Perhitungan waktu shalat dari koordinat. Dipakai di browser (hitung mundur dan tabel).
 // Hasil: menit sejak 00:00 waktu setempat. Perkiraan, bisa beda 1-3 menit dari jadwal Kemenag.
 const Shalat = (() => {
   const R = Math.PI / 180;
