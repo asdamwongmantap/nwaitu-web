@@ -1,0 +1,10 @@
+{
+  "name": "nwaitu-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "preview": "npx serve dist"
+  },
+  "engines": { "node": ">=18" }
+}
