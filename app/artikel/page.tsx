@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Cta from '@/components/Cta';
-import { artikel, situs } from '@/lib/situs';
+import { IkonArtikel, IkonJadwal } from '@/components/Ikon';
+import KepalaHalaman from '@/components/KepalaHalaman';
+import { artikel, menitBaca, situs } from '@/lib/situs';
 
 export const metadata: Metadata = {
   title: 'Artikel',
@@ -11,17 +13,36 @@ export const metadata: Metadata = {
 
 export default function HalamanArtikel() {
   return (
-    <main className="wrap">
-      <h1>Artikel</h1>
-      <div className="grid">
-        {artikel.map((a) => (
-          <Link key={a.slug} className="card" href={`/artikel/${a.slug}/`}>
-            <h3>{a.judul}</h3>
-            <div className="muted">{a.ringkas}</div>
-          </Link>
-        ))}
-      </div>
-      <Cta />
-    </main>
+    <>
+      <KepalaHalaman
+        label="Panduan ibadah"
+        judul="Artikel"
+        ikon={<IkonArtikel />}
+        deskripsi="Artikel ringkas seputar ibadah sehari-hari: niat, tata cara, dan doa."
+        info={[`${artikel.length} artikel`, 'Bisa dibaca offline']}
+        tanpaAlat
+      />
+      <main className="wrap">
+        <div className="grid grid-artikel">
+          {artikel.map((a) => (
+            <Link key={a.slug} className="card kartu-artikel besar" href={`/artikel/${a.slug}/`}>
+              <span className="ubin-ikon">
+                <IkonArtikel />
+              </span>
+              <h2>{a.judul}</h2>
+              <p className="muted">{a.ringkas}</p>
+              <span className="artikel-kaki">
+                <span className="waktu-baca">
+                  <IkonJadwal />
+                  {menitBaca(a)} menit baca
+                </span>
+                <span className="baca-lanjut">Baca artikel →</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+        <Cta />
+      </main>
+    </>
   );
 }

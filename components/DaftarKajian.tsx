@@ -2,32 +2,50 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import type { DataKajian } from '@/lib/kajian';
+import { IkonJadwal, IkonOrang } from './Ikon';
+import { IkonPin } from './PilihWilayah';
 import { berikutnya, kapan, keteranganJam, labelMode, labelPeserta, type Kajian } from '@/lib/kajian-util';
 import { bacaSimpanan } from './WidgetShalat';
 
 type Rentang = 'hari' | 'pekan' | 'semua';
+const LANGKAH = 12; // jumlah kartu per tampilan di halaman kajian
 const KUNCI = 'nawaitu_kajian_wilayah';
 
 export function KartuKajian({ k, iso, berlangsung, keterangan, sekarang }: { k: Kajian; iso: string; berlangsung: boolean; keterangan: string; sekarang: number }) {
   const mode = labelMode(k.mode);
   const peserta = labelPeserta(k.peserta);
   return (
-    <Link className="card kartu-kajian" href={`/kajian/${k.slug}/`}>
-      <div className="lencana">
-        {berlangsung && <span className="tag mulai">Sedang berlangsung</span>}
-        <span className="tag waktu-tag">
-          {kapan(iso, sekarang, k.zona)} · {keterangan}
+    <Link className={berlangsung ? 'card kartu-kajian sedang' : 'card kartu-kajian'} href={`/kajian/${k.slug}/`}>
+      <div className="kk-waktu">
+        <span className="kk-ikon">
+          <IkonJadwal />
         </span>
-        {mode && <span className="tag">{mode}</span>}
-        {peserta && <span className="tag">{peserta}</span>}
-        {k.tanggalPerkiraan && <span className="tag emas">Tanggal perkiraan</span>}
+        <span>
+          <b>{kapan(iso, sekarang, k.zona)}</b> · {keterangan}
+        </span>
       </div>
+      {(berlangsung || mode || peserta || k.tanggalPerkiraan) && (
+        <div className="lencana">
+          {berlangsung && <span className="tag mulai">Sedang berlangsung</span>}
+          {mode && <span className="tag">{mode}</span>}
+          {peserta && <span className="tag">{peserta}</span>}
+          {k.tanggalPerkiraan && <span className="tag emas">Tanggal perkiraan</span>}
+        </div>
+      )}
       <h3>{k.judul}</h3>
       {k.subJudul && <p className="sub-judul">{k.subJudul}</p>}
-      {k.ustadz.length > 0 && <div className="ustadz">{k.ustadz.join(', ')}</div>}
+      {k.ustadz.length > 0 && (
+        <div className="ustadz">
+          <IkonOrang />
+          <span>{k.ustadz.join(', ')}</span>
+        </div>
+      )}
       <div className="tempat">
-        {k.tempat}
-        {k.kabkota ? ` · ${k.kabkota.replace(/^Kota Administrasi /, '')}` : ''}
+        <IkonPin />
+        <span>
+          {k.tempat}
+          {k.kabkota ? ` · ${k.kabkota.replace(/^Kota Administrasi /, '')}` : ''}
+        </span>
       </div>
     </Link>
   );
@@ -49,6 +67,8 @@ export default function DaftarKajian({
   const [kotaSaya, setKotaSaya] = useState<string | null>(null);
   const [rentang, setRentang] = useState<Rentang>(ringkas ? 'semua' : 'pekan');
   const [online, setOnline] = useState(true);
+  const [jumlah, setJumlah] = useState(LANGKAH);
+  useEffect(() => setJumlah(LANGKAH), [wilayah, rentang, online]);
 
   useEffect(() => {
     setNow(Date.now());
@@ -103,7 +123,7 @@ export default function DaftarKajian({
   return (
     <>
       {!ringkas && (
-        <div className="saring">
+        <div className="saring alat-melayang filter-kajian">
           <div className="baris">
             <label className="sr-only" htmlFor="pilih-wilayah">
               Wilayah
@@ -124,7 +144,7 @@ export default function DaftarKajian({
               </label>
             )}
           </div>
-          <div className="chips" role="group" aria-label="Rentang waktu" style={{ margin: 0 }}>
+          <div className="segmen" role="group" aria-label="Rentang waktu">
             {(
               [
                 ['hari', 'Hari ini'],
@@ -132,7 +152,7 @@ export default function DaftarKajian({
                 ['semua', 'Semua'],
               ] as const
             ).map(([v, n]) => (
-              <button key={v} className="chip" type="button" aria-pressed={rentang === v} onClick={() => setRentang(v)}>
+              <button key={v} type="button" aria-pressed={rentang === v} onClick={() => setRentang(v)}>
                 {n}
               </button>
             ))}
@@ -140,11 +160,25 @@ export default function DaftarKajian({
         </div>
       )}
       {item.length ? (
-        <div className="grid">
-          {item.map((e) => (
+        <>
+          {!ringkas && (
+            <p className="hitung-hasil" role="status">
+              <b>{item.length}</b> kajian ditampilkan
+            </p>
+          )}
+        <div className={ringkas ? 'grid ringkas' : 'grid'}>
+          {(ringkas ? item : item.slice(0, jumlah)).map((e) => (
             <KartuKajian key={e.k.id} k={e.k} iso={e.iso} berlangsung={e.berlangsung} keterangan={e.ket} sekarang={now} />
           ))}
         </div>
+        {!ringkas && item.length > jumlah && (
+          <div className="lagi">
+            <button className="tombol garis" type="button" onClick={() => setJumlah((j) => j + LANGKAH)}>
+              Tampilkan lebih banyak ({item.length - jumlah} lagi)
+            </button>
+          </div>
+        )}
+        </>
       ) : (
         <div className="kosong">
           <b>Belum ada kajian yang cocok</b>

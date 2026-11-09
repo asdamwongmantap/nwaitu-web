@@ -7,7 +7,9 @@ import {
   LABEL, TAMPIL, WAJIB, fmtMenit, isoTanggal, jamDinding, menitDari, pad, tambahHari,
   tanggalHijriah, tanggalPanjang, type JadwalHari, type Waktu,
 } from '@/lib/waktu';
+import { IkonWaktu } from './Ikon';
 import PilihWilayah, { IkonPin } from './PilihWilayah';
+import TombolPoster from './TombolPoster';
 
 export type DataJadwal = { wilayah: Wilayah; jadwal: Record<string, JadwalHari> };
 export const KUNCI_SIMPAN = 'nawaitu_wilayah';
@@ -58,11 +60,13 @@ export default function WidgetShalat({
   hariIniAwal,
   judul,
   tetap = false,
+  tumpuk = false,
 }: {
   awal: DataJadwal | null;
   hariIniAwal: string; // tanggal saat halaman dibuat, dipakai sampai jam browser terbaca
   judul?: ReactNode;
   tetap?: boolean; // halaman satu kota: pilihan kota pindah halaman
+  tumpuk?: boolean; // beri ruang di bawah banner agar kartu berikutnya menumpuk di tepinya
 }) {
   const router = useRouter();
   const [data, setData] = useState(awal);
@@ -117,84 +121,126 @@ export default function WidgetShalat({
 
   return (
     <>
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div>
-            {judul}
-            <div className="label">Waktu shalat berikutnya</div>
-            <div className="nama-next">{h ? LABEL[h.next] : '…'}</div>
-            <div className="sub">
-              {tanggalPanjang(iso)}
-              {tanggalHijriah(iso) && ` · ${tanggalHijriah(iso)}`}
+      <section className={tumpuk ? 'hero tumpuk' : 'hero'}>
+        <div className="wrap">
+          <div className="hero-grid">
+            <div>
+              {judul}
+              <div className="tanggal-hero">
+                {tanggalPanjang(iso)}
+                {tanggalHijriah(iso) && <span> · {tanggalHijriah(iso)}</span>}
+              </div>
+              <div className="label kiri-label">Waktu shalat berikutnya</div>
+              <div className="nama-next">
+                {h ? LABEL[h.next] : '…'}
+                {h && (
+                  <span className="jam-next">
+                    {h.jamNext}
+                    {w && <small>{w.zona}</small>}
+                  </span>
+                )}
+              </div>
+              <div className="lokasi">
+                <button className="tombol-lokasi" type="button" onClick={() => setBuka(true)} aria-haspopup="dialog">
+                  <IkonPin />
+                  {w ? `${w.namaTampil}` : 'Pilih kota'}
+                  <span aria-hidden="true">▾</span>
+                </button>
+                {!tetap && w && (
+                  <Link className="tombol-lokasi redup" href={`/jadwal-sholat/${w.slug}/`}>
+                    Jadwal sebulan →
+                  </Link>
+                )}
+              </div>
             </div>
-            <div className="lokasi">
-              <button className="tombol-lokasi" type="button" onClick={() => setBuka(true)} aria-haspopup="dialog">
-                <IkonPin />
-                {w ? `${w.namaTampil}` : 'Pilih kota'}
-                <span aria-hidden="true">▾</span>
-              </button>
-              {!tetap && w && (
-                <Link className="tombol-lokasi redup" href={`/jadwal-sholat/${w.slug}/`}>
-                  Jadwal sebulan →
-                </Link>
-              )}
-            </div>
-          </div>
-          <div className="kartu-hitung" aria-live="off">
-            <div className="label">Tersisa</div>
-            <div className="count">{memuat ? '…' : sisa}</div>
-            <div className="progres" aria-hidden="true">
-              <span style={{ width: `${h ? h.persen.toFixed(1) : 0}%` }} />
-            </div>
-            <div className="progres-ket">
-              <span>{h ? `${LABEL[h.sebelum.nama]} ${h.sebelum.jam}` : ''}</span>
-              <span>{h ? `${LABEL[h.next]} ${h.jamNext}` : ''}</span>
-            </div>
-            <div className="sub">
+            <div className="kartu-hitung" aria-live="off">
+              <div className="kh-baris">
+                {/* Hanya tampil di ponsel; di layar lebar nama waktu berikutnya ada di kolom kiri. */}
+                <div className="kh-next">
+                  <div className="label">Berikutnya</div>
+                  <div className="kh-nama">
+                    {h ? LABEL[h.next] : '…'}
+                    {h && <small>{h.jamNext}</small>}
+                  </div>
+                </div>
+                <div className="kh-sisa">
+                  <div className="label">Tersisa</div>
+                  <div className="count">{memuat ? '…' : sisa}</div>
+                </div>
+              </div>
+              <div className="progres" aria-hidden="true">
+                <span style={{ width: `${h ? h.persen.toFixed(1) : 0}%` }} />
+              </div>
+              <div className="progres-ket">
+                <span>{h ? `${LABEL[h.sebelum.nama]} ${h.sebelum.jam}` : ''}</span>
+                <span>{h ? `${LABEL[h.next]} ${h.jamNext}` : ''}</span>
+              </div>
               {galat ? (
-                <span className="galat">{galat}</span>
-              ) : h && w ? (
-                `Pukul ${h.jamNext} ${w.zona} di ${w.namaTampil}`
+                <div className="sub">
+                  <span className="galat">{galat}</span>
+                </div>
               ) : w && now != null && !j ? (
-                <span className="galat">Jadwal hari ini belum tersedia.</span>
-              ) : (
-                ' '
-              )}
+                <div className="sub">
+                  <span className="galat">Jadwal hari ini belum tersedia.</span>
+                </div>
+              ) : null}
             </div>
           </div>
+
+          <section className="hero-jadwal" aria-labelledby="judul-hari-ini">
+            <div className="hero-jadwal-kepala">
+              <h2 id="judul-hari-ini">
+                Jadwal hari ini{w ? <span> · {w.namaTampil} ({w.zona})</span> : null}
+              </h2>
+              {w && j && (
+                <TombolPoster
+                  className="chip ikon pada-hijau"
+                  label="Bagikan jadwal"
+                  isi={{
+                    jenis: 'sholat',
+                    kota: w.namaTampil,
+                    provinsi: w.provinsi,
+                    zona: w.zona,
+                    tanggal: tanggalPanjang(iso),
+                    hijriah: tanggalHijriah(iso),
+                    jadwal: j,
+                    path: `/jadwal-sholat/${w.slug}/`,
+                  }}
+                />
+              )}
+            </div>
+            <div className="waktu">
+              {TAMPIL.map((k) => {
+                const lewat = j && menit != null && menitDari(j[k]) <= menit && k !== h?.next;
+                const cls = k === h?.next ? 'w next' : lewat ? 'w lewat' : 'w';
+                return (
+                  <div key={k} className={cls} aria-current={k === h?.next ? 'time' : undefined}>
+                    <span className="w-ikon">
+                      <IkonWaktu k={k} />
+                    </span>
+                    <span className="w-nama">{LABEL[k]}</span>
+                    <b>{j ? j[k] : '--:--'}</b>
+                  </div>
+                );
+              })}
+            </div>
+            {j && (
+              <div className="info-waktu">
+                <span>
+                  Imsak <b>{j.imsak}</b>
+                </span>
+                <span>
+                  Dhuha <b>{j.dhuha}</b>
+                </span>
+                <span>Sumber: Kemenag RI via EQuran.id</span>
+              </div>
+            )}
+          </section>
         </div>
       </section>
       <noscript>
         <div className="wrap catatan">Aktifkan JavaScript untuk melihat hitung mundur waktu shalat.</div>
       </noscript>
-      <section className="wrap" aria-labelledby="judul-hari-ini">
-        <h2 id="judul-hari-ini">
-          Jadwal hari ini{w ? <span className="muted"> · {w.namaTampil} ({w.zona})</span> : null}
-        </h2>
-        <div className="waktu">
-          {TAMPIL.map((k) => {
-            const lewat = j && menit != null && menitDari(j[k]) <= menit && k !== h?.next;
-            const cls = k === h?.next ? 'w next' : lewat ? 'w lewat' : 'w';
-            return (
-              <div key={k} className={cls}>
-                <span>{LABEL[k]}</span>
-                <b>{j ? j[k] : '--:--'}</b>
-              </div>
-            );
-          })}
-        </div>
-        {j && (
-          <div className="info-waktu">
-            <span>
-              Imsak <b>{j.imsak}</b>
-            </span>
-            <span>
-              Dhuha <b>{j.dhuha}</b>
-            </span>
-            <span>Sumber: Kemenag RI via EQuran.id</span>
-          </div>
-        )}
-      </section>
       {buka && <PilihWilayah aktif={w?.slug} onPilih={pilih} onTutup={tutup} />}
     </>
   );

@@ -44,3 +44,30 @@ export function tanggalHijriah(iso: string) {
     return '';
   }
 }
+
+const HIJRIAH = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
+function hijriah(iso: string) {
+  const p = HIJRIAH.formatToParts(new Date(iso + 'T00:00:00Z'));
+  const n = (t: string) => Number(p.find((x) => x.type === t)?.value);
+  return { hari: n('day'), bulan: n('month'), tahun: n('year') };
+}
+
+/**
+ * Ramadan yang sedang berjalan atau yang berikutnya (kalender Umm al-Qura, bisa beda satu hari dari
+ * penetapan sidang isbat Kemenag). Mengembalikan tanggal awal dan akhir (ISO) serta tahun Hijriah.
+ */
+export function ramadanBerikutnya(dariIso: string) {
+  let mulai: string | null = null;
+  for (let i = -30; i <= 400; i++) {
+    const iso = tambahHari(dariIso, i);
+    const h = hijriah(iso);
+    if (h.bulan === 9 && (h.hari === 1 || (i === -30 && h.hari > 1))) {
+      mulai = h.hari === 1 ? iso : tambahHari(iso, 1 - h.hari);
+      break;
+    }
+  }
+  if (!mulai) return null;
+  let selesai = mulai;
+  while (hijriah(tambahHari(selesai, 1)).bulan === 9) selesai = tambahHari(selesai, 1);
+  return { mulai, selesai, tahun: hijriah(mulai).tahun };
+}
