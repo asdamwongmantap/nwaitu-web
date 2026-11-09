@@ -30,3 +30,6 @@ export const artikel: Artikel[] = [
     "isi": "<p>Menurut mazhab Syafi'i, wudhu sah bila memenuhi enam rukun berikut, dikerjakan berurutan.</p>\n<ol><li>Niat di hati ketika mulai membasuh wajah.</li><li>Membasuh seluruh wajah.</li><li>Membasuh kedua tangan sampai siku.</li><li>Mengusap sebagian kepala.</li><li>Membasuh kedua kaki sampai mata kaki.</li><li>Tertib, sesuai urutan di atas.</li></ol>\n<p>Rincian antar mazhab berbeda. Ikuti mazhab yang Anda anut atau tanyakan kepada ustadz setempat.</p>"
   }
 ];
+
+/** Perkiraan waktu baca dalam menit (±180 kata per menit, minimal 1). */
+export const menitBaca = (a: Artikel) => Math.max(1, Math.round(a.isi.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 180));

@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: u('/'), lastModified: now, changeFrequency: 'daily', priority: 1 },
     { url: u('/jadwal-sholat/'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: u('/masjid-terdekat/'), changeFrequency: 'monthly', priority: 0.7 },
     { url: u('/kajian/'), lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: u('/artikel/'), changeFrequency: 'weekly', priority: 0.5 },
     ...wilayah.map((w) => ({ url: u(`/jadwal-sholat/${w.slug}/`), changeFrequency: 'daily' as const, priority: 0.7 })),

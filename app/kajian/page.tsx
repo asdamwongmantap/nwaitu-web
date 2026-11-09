@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Cta from '@/components/Cta';
 import DaftarKajian from '@/components/DaftarKajian';
+import { IkonKajian } from '@/components/Ikon';
+import KepalaHalaman from '@/components/KepalaHalaman';
 import { REPO_KAJIAN, muatKajian } from '@/lib/kajian';
 
 export const revalidate = 21600;
@@ -18,13 +20,20 @@ const fmtData = (iso: string) =>
 export default async function HalamanKajian() {
   const data = await muatKajian().catch(() => null);
   return (
-    <main className="wrap">
-      <h1>Jadwal Kajian</h1>
-      <p className="muted baca">
-        Kajian islami di berbagai kota, termasuk kajian rutin pekanan dan kajian online. Jam yang mengikuti waktu shalat
-        (mis. ba&apos;da Maghrib) diperkirakan dari jadwal shalat wilayah tersebut.
-        {data?.dibuat && <> Data per {fmtData(data.dibuat)}.</>}
-      </p>
+    <>
+      <KepalaHalaman
+        label="Kajian"
+        judul="Jadwal Kajian"
+        ikon={<IkonKajian />}
+        deskripsi={
+          <>
+            Kajian islami di berbagai kota, termasuk kajian rutin pekanan dan kajian online. Jam yang mengikuti waktu shalat
+            (mis. ba&apos;da Maghrib) diperkirakan dari jadwal shalat wilayah tersebut.
+          </>
+        }
+        info={data ? [`${data.wilayah.length} wilayah`, 'Rutin dan online', ...(data.dibuat ? [`Data per ${fmtData(data.dibuat)}`] : [])] : ['Rutin dan online']}
+      />
+      <main className="wrap">
       {data ? (
         <DaftarKajian data={data} dibuatHalaman={Date.now()} />
       ) : (
@@ -41,6 +50,7 @@ export default async function HalamanKajian() {
         .
       </div>
       <Cta />
-    </main>
+      </main>
+    </>
   );
 }

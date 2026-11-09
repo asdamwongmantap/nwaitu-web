@@ -1,6 +1,8 @@
 // Jadwal kajian dari repositori data yang sama dengan aplikasi Nawaitu
-// (diperbarui otomatis dua kali sehari).
+// (diperbarui otomatis dua kali sehari). Entri yang sudah disaring disimpan di
+// data/kajian.json dan diambil ulang tiap MASA_BERLAKU.kajian (lib/arsip.ts).
 import 'server-only';
+import { MASA_BERLAKU, arsip } from './arsip';
 import { cocokkanWilayah, daftarWilayah, jadwalWilayah, slugify, type Wilayah } from './jadwal';
 import type { JadwalAcuan, Kajian } from './kajian-util';
 import { isoTanggal, jamDinding, tambahHari } from './waktu';
@@ -86,11 +88,26 @@ export type DataKajian = {
   wilayah: { slug: string; nama: string }[]; // wilayah yang punya kajian, urut abjad
 };
 
-export async function muatKajian(): Promise<DataKajian> {
-  const res = await fetch(URL_KAJIAN, { next: { revalidate: 21600 }, signal: AbortSignal.timeout(20000) });
+type ArsipKajian = { dibuat: string | null; kajian: Omit<Kajian, 'jadwalSlug'>[] };
+
+/** Unduh sumber lalu simpan hanya entri yang valid, dalam bentuk yang sudah diolah. */
+async function unduhKajian(): Promise<ArsipKajian> {
+  // Tanpa opsi cache: penyimpanan diatur oleh arsip, dan no-store akan membuat halaman jadi dinamis.
+  const res = await fetch(URL_KAJIAN, { signal: AbortSignal.timeout(20000) });
   if (!res.ok) throw new Error(`Data kajian: HTTP ${res.status}`);
   const json = (await res.json()) as Mentah;
-  const mentah = (Array.isArray(json.kajian) ? json.kajian : []).map(dariJson).filter(Boolean) as Omit<Kajian, 'jadwalSlug'>[];
+  return {
+    dibuat: typeof json.dibuat === 'string' ? json.dibuat : null,
+    kajian: (Array.isArray(json.kajian) ? json.kajian : []).map(dariJson).filter(Boolean) as Omit<Kajian, 'jadwalSlug'>[],
+  };
+}
+
+export async function muatKajian(): Promise<DataKajian> {
+  const { kajian: mentah, dibuat } = await arsip('kajian.json', {
+    masa: MASA_BERLAKU.kajian,
+    ambil: unduhKajian,
+    layak: (d) => d.kajian.length > 0, // sumber kosong/rusak: jangan timpa arsip yang ada
+  });
 
   // Cocokkan wilayah kajian dengan wilayah jadwal shalat untuk menghitung "Ba'da Maghrib".
   let semua: Wilayah[] = [];
@@ -136,7 +153,7 @@ export async function muatKajian(): Promise<DataKajian> {
   for (const k of kajian) if (k.wilayah && k.kabkota) wil.set(k.wilayah, k.kabkota);
   return {
     kajian,
-    dibuat: typeof json.dibuat === 'string' ? json.dibuat : null,
+    dibuat,
     acuan,
     wilayah: [...wil].map(([slug, nama]) => ({ slug, nama })).sort((a, b) => a.nama.localeCompare(b.nama, 'id')),
   };

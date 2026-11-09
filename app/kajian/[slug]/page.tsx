@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import Cta from '@/components/Cta';
+import { IkonKajian, IkonMasjid, IkonOrang, IkonTempat } from '@/components/Ikon';
+import KepalaHalaman from '@/components/KepalaHalaman';
+import TombolPoster from '@/components/TombolPoster';
 import { idDariSlug, muatKajian } from '@/lib/kajian';
 import { berikutnya, jadwalTeks, keteranganJam, labelMode, labelPeserta } from '@/lib/kajian-util';
 import { situs } from '@/lib/situs';
@@ -69,88 +72,139 @@ export default async function DetailKajian({ params }: Props) {
         }
       : null;
 
+  // Teks jadwal rutin dari sumber kadang diawali simbol atau "Waktu :"; rapikan khusus untuk chip di banner.
+  const jadwalRingkas = jadwalTeks(k).replace(/^[^\p{L}\p{N}]+/u, '').replace(/^waktu\s*:\s*/i, '');
+  const adaLencana = Boolean(mode || peserta || k.tanggalPerkiraan);
+  const wilayah = k.kabkota ? `${k.kabkota}${k.provinsi ? `, ${k.provinsi}` : ''}` : null;
+
   return (
-    <main className="wrap baca">
+    <>
       {ld && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} />}
-      <p style={{ marginTop: 24 }}>
-        <Link href="/kajian/">← Semua kajian</Link>
-      </p>
-      <div className="lencana">
-        {mode && <span className="tag">{mode}</span>}
-        {peserta && <span className="tag">Khusus {peserta}</span>}
-        {k.tanggalPerkiraan && <span className="tag emas">Tanggal perkiraan</span>}
-      </div>
-      <h1 style={{ marginTop: 10 }}>{k.judul}</h1>
-      {k.subJudul && <p className="muted" style={{ fontSize: '1.05rem', marginTop: 0 }}>{k.subJudul}</p>}
-      <dl className="rincian">
-        {k.ustadz.length > 0 && (
-          <>
-            <dt>Pemateri</dt>
-            <dd>{k.ustadz.join(', ')}</dd>
-          </>
-        )}
-        <dt>Jadwal</dt>
-        <dd>{jadwalTeks(k)}</dd>
-        <dt>Waktu</dt>
-        <dd>{keteranganJam(k, j)}</dd>
-        {j && !k.tanggal && (
-          <>
-            <dt>Berikutnya</dt>
-            <dd>{tanggalPanjang(j.iso)}</dd>
-          </>
-        )}
-        <dt>Tempat</dt>
-        <dd>
-          {k.tempat}
-          {k.alamat && <div className="muted">{k.alamat}</div>}
-        </dd>
-        {k.kabkota && (
-          <>
-            <dt>Wilayah</dt>
-            <dd>
-              {k.kabkota}
-              {k.provinsi ? `, ${k.provinsi}` : ''}
-            </dd>
-          </>
-        )}
-      </dl>
-      {!j && <div className="catatan">Kajian ini sudah lewat atau jadwal berikutnya belum diketahui.</div>}
-      <div className="aksi">
-        {k.peta && (
-          <a className="tombol" href={k.peta} target="_blank" rel="noopener">
-            Buka peta
-          </a>
-        )}
-        {k.streaming && (
-          <a className="tombol garis" href={k.streaming} target="_blank" rel="noopener nofollow">
-            Tonton live
-          </a>
-        )}
-        {k.jadwalSlug && (
-          <Link className="tombol garis" href={`/jadwal-sholat/${k.jadwalSlug}/`}>
-            Jadwal shalat di sini
-          </Link>
-        )}
-      </div>
-      {k.sumber.length > 0 && (
-        <>
-          <h2>Sumber pengumuman</h2>
-          <ul>
-            {k.sumber.slice(0, 5).map((s, i) => (
-              <li key={i}>
-                <a href={s.url} target="_blank" rel="noopener nofollow">
-                  {s.nama}
-                </a>
+      <KepalaHalaman
+        kembali={{ href: '/kajian/', label: 'Semua kajian' }}
+        label="Kajian"
+        ikon={<IkonKajian />}
+        judul={k.judul}
+        deskripsi={k.subJudul ?? undefined}
+        lencana={
+          adaLencana ? (
+            <>
+              {mode && <span className="tag">{mode}</span>}
+              {peserta && <span className="tag">Khusus {peserta}</span>}
+              {k.tanggalPerkiraan && <span className="tag emas">Tanggal perkiraan</span>}
+            </>
+          ) : undefined
+        }
+        info={[jadwalRingkas.charAt(0).toUpperCase() + jadwalRingkas.slice(1), keteranganJam(k, j)]}
+      />
+      <main className="wrap">
+        <section className="saring alat-melayang kartu-rincian" aria-label="Rincian kajian">
+          <ul className="rincian-baris">
+            {k.ustadz.length > 0 && (
+              <li>
+                <span className="ubin-ikon kecil">
+                  <IkonOrang />
+                </span>
+                <div>
+                  <small>Pemateri</small>
+                  <b>{k.ustadz.join(', ')}</b>
+                </div>
               </li>
-            ))}
+            )}
+            {j && !k.tanggal && (
+              <li>
+                <span className="ubin-ikon kecil">
+                  <IkonKajian />
+                </span>
+                <div>
+                  <small>Berikutnya</small>
+                  <b>{tanggalPanjang(j.iso)}</b>
+                </div>
+              </li>
+            )}
+            <li>
+              <span className="ubin-ikon kecil">
+                <IkonMasjid />
+              </span>
+              <div>
+                <small>Tempat</small>
+                <b>{k.tempat}</b>
+                {k.alamat && <span className="muted">{k.alamat}</span>}
+              </div>
+            </li>
+            {wilayah && (
+              <li>
+                <span className="ubin-ikon kecil">
+                  <IkonTempat />
+                </span>
+                <div>
+                  <small>Wilayah</small>
+                  <b>{wilayah}</b>
+                </div>
+              </li>
+            )}
           </ul>
-        </>
-      )}
-      <div className="catatan">
-        Jadwal dibaca otomatis dari pengumuman publik sehingga bisa keliru atau berubah. Selalu cek sumbernya sebelum berangkat.
-        Pengingat kajian tersedia di aplikasi {situs.nama}.
-      </div>
-      <Cta />
-    </main>
+          <div className="aksi">
+            {k.peta && (
+              <a className="tombol" href={k.peta} target="_blank" rel="noopener">
+                Buka peta
+              </a>
+            )}
+            {k.streaming && (
+              <a className="tombol garis" href={k.streaming} target="_blank" rel="noopener nofollow">
+                Tonton live
+              </a>
+            )}
+            {k.jadwalSlug && (
+              <Link className="tombol garis" href={`/jadwal-sholat/${k.jadwalSlug}/`}>
+                Jadwal shalat di sini
+              </Link>
+            )}
+            <TombolPoster
+              className="tombol garis"
+              label="Buat poster"
+              isi={{
+                jenis: 'kajian',
+                judul: k.judul,
+                subJudul: k.subJudul,
+                label: [mode, peserta && `Khusus ${peserta}`].filter(Boolean).join(' · ') || null,
+                ustadz: k.ustadz,
+                jadwal: jadwalTeks(k),
+                waktu: keteranganJam(k, j),
+                berikutnya: j && !k.tanggal ? tanggalPanjang(j.iso) : null,
+                tempat: k.tempat,
+                wilayah: k.kabkota ? [k.kabkota, k.provinsi].filter(Boolean).join(', ') : null,
+                path: `/kajian/${k.slug}/`,
+              }}
+            />
+          </div>
+        </section>
+
+        {!j && <div className="catatan">Kajian ini sudah lewat atau jadwal berikutnya belum diketahui.</div>}
+
+        {k.sumber.length > 0 && (
+          <>
+            <div className="kepala-bagian bagian">
+              <h2>Sumber pengumuman</h2>
+            </div>
+            <ul className="sumber-daftar">
+              {k.sumber.slice(0, 5).map((s, i) => (
+                <li key={i}>
+                  <a href={s.url} target="_blank" rel="noopener nofollow">
+                    <span>{s.nama}</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <div className="catatan">
+          Jadwal dibaca otomatis dari pengumuman publik sehingga bisa keliru atau berubah. Selalu cek sumbernya sebelum berangkat.
+          Pengingat kajian tersedia di aplikasi {situs.nama}.
+        </div>
+        <Cta />
+      </main>
+    </>
   );
 }
