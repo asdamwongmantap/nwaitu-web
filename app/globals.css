@@ -165,7 +165,7 @@ a.card:hover { border-color: var(--hijau-2); transform: translateY(-3px); box-sh
 .kartu-kajian .sub-judul { color: var(--fg); font-size: .93rem; margin: 0 0 6px; }
 .kartu-kajian .ustadz { font-weight: 600; font-size: .95rem; }
 .kartu-kajian .tempat { color: var(--muted); font-size: .9rem; margin-top: 4px; }
-.saring { display: grid; gap: 10px; margin-bottom: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+.saring { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-bottom: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
 .saring .baris { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 select { font: inherit; padding: 8px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; max-width: 100%; }
 .centang { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; cursor: pointer; }
@@ -539,7 +539,7 @@ button.tombol.garis { border: 1px solid var(--hijau-2); }
   .saring.alat-melayang { margin: -46px 0 22px; padding: 12px; border-radius: 18px; }
 
   .segmen { display: flex; width: 100%; }
-  .segmen button { flex: 1; padding: 9px 8px; font-size: .86rem; }
+  .segmen button { flex: 1; min-width: 0; gap: 6px; padding: 9px 6px; font-size: .86rem; }
   .segmen button svg { width: 16px; height: 16px; }
   .cari-baris { flex-direction: column; align-items: stretch; }
   .cari-baris > .tombol { justify-content: center; }
@@ -614,14 +614,15 @@ button.tombol.garis { border: 1px solid var(--hijau-2); }
 }
 
 /* Kutipan hari ini: kartu hijau gelap (beda dari kartu ayat yang krem) agar dua kartu tidak terlihat menumpuk */
-.ayat-bagian { display: grid; gap: 18px; align-items: stretch; }
+.ayat-bagian { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: stretch; }
+.ayat-bagian > *, .ayat-kolom > .kartu-ayat { min-width: 0; }
 .ayat-bagian:has(.ayat-kolom) { grid-template-columns: minmax(0, 1fr) 340px; }
 .ayat-kolom { display: flex; }
 .ayat-kolom > .kartu-ayat { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .kutipan-bagian { display: flex; }
 .kutipan-kartu { flex: 1; display: flex; flex-direction: column; }
 .kutipan-jalur { flex: 1; }
-@media (max-width: 900px) { .ayat-bagian:has(.ayat-kolom) { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .ayat-bagian:has(.ayat-kolom) { grid-template-columns: minmax(0, 1fr); } }
 .kutipan-kartu { position: relative; overflow: hidden; isolation: isolate; color: var(--on-hijau); padding: 18px 20px 16px; border-radius: 22px;
   background: radial-gradient(120% 140% at 0% 0%, #1d6b4e 0, #14573f 38%, #0b2f24 100%); border: 1px solid rgba(232, 195, 90, .35);
   box-shadow: 0 30px 50px -30px rgba(14, 59, 46, .75); }
