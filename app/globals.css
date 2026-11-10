@@ -612,3 +612,50 @@ button.tombol.garis { border: 1px solid var(--hijau-2); }
   .isi-artikel ul li::before { left: 20px; }
   .isi-artikel .arab { padding: 16px 12px; }
 }
+
+/* Kutipan hari ini: kartu hijau gelap (beda dari kartu ayat yang krem) agar dua kartu tidak terlihat menumpuk */
+.ayat-bagian { display: grid; gap: 18px; align-items: stretch; }
+.ayat-bagian:has(.ayat-kolom) { grid-template-columns: minmax(0, 1fr) 340px; }
+.ayat-kolom { display: flex; }
+.ayat-kolom > .kartu-ayat { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.kutipan-bagian { display: flex; }
+.kutipan-kartu { flex: 1; display: flex; flex-direction: column; }
+.kutipan-jalur { flex: 1; }
+@media (max-width: 900px) { .ayat-bagian:has(.ayat-kolom) { grid-template-columns: 1fr; } }
+.kutipan-kartu { position: relative; overflow: hidden; isolation: isolate; color: var(--on-hijau); padding: 18px 20px 16px; border-radius: 22px;
+  background: radial-gradient(120% 140% at 0% 0%, #1d6b4e 0, #14573f 38%, #0b2f24 100%); border: 1px solid rgba(232, 195, 90, .35);
+  box-shadow: 0 30px 50px -30px rgba(14, 59, 46, .75); }
+.kutipan-kartu::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .13;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23e8c35a' stroke-width='1.2'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate%2845 36 36%29'/%3E%3Ccircle cx='36' cy='36' r='4'/%3E%3C/g%3E%3C/svg%3E"); background-size: 72px 72px;
+  -webkit-mask-image: linear-gradient(110deg, transparent 30%, #000); mask-image: linear-gradient(110deg, transparent 30%, #000); }
+.kutipan-kartu::after { content: '“'; position: absolute; z-index: -1; top: -4px; right: 20px; font: 700 7rem/1 Georgia, serif; color: var(--emas-2); opacity: .16; pointer-events: none; }
+.kutipan-atas { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.kutipan-atas h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--emas-2); font-weight: 800; }
+.kutipan-atas h2::before { content: ''; width: 24px; height: 2px; border-radius: 2px; background: var(--emas-2); }
+.kutipan-hitung { font-size: .85rem; color: var(--on-hijau-muted); letter-spacing: .08em; }
+.kutipan-hitung b { color: var(--on-hijau); font-size: 1.05rem; }
+.kutipan-jalur { display: flex; margin: 0; padding: 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.kutipan-jalur::-webkit-scrollbar { display: none; }
+.kutipan-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; padding: 14px 0 16px; }
+.kutipan-slide blockquote { margin: 0; font-size: 1.08rem; line-height: 1.5; font-weight: 650; letter-spacing: -.012em; text-wrap: balance; color: #fff; }
+.kutipan-asal { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .16); font-size: .82rem; color: var(--on-hijau-muted); }
+.kutipan-asal b { color: var(--emas-2); font-size: .9rem; }
+.kutipan-jenis { padding: 3px 10px; border-radius: 99px; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #0b2f24; background: var(--emas-2); }
+.kutipan-bawah { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.kutipan-aksi { display: flex; align-items: center; gap: 6px; }
+.kutipan-titik { display: flex; gap: 6px; }
+.kutipan-titik button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 2px; background: rgba(255, 255, 255, .28); cursor: pointer; transition: background .2s; }
+.kutipan-titik button[aria-current] { background: var(--emas-2); }
+.kutipan-panah { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 8px; border: 1px solid rgba(255, 255, 255, .28); background: rgba(255, 255, 255, .06); color: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; position: relative; z-index: 1; }
+.kutipan-panah:hover { background: rgba(255, 255, 255, .16); }
+.kutipan-panah:active { transform: scale(.94); }
+.kutipan-panah:focus-visible, .kutipan-titik button:focus-visible { outline: 2px solid var(--emas-2); outline-offset: 2px; }
+.kutipan-kartu .chip { background: var(--emas-2); border-color: var(--emas-2); color: #0b2f24; font-weight: 700; }
+.kutipan-kartu .chip:hover { background: #f3d57e; }
+@media (max-width: 640px) {
+  .kutipan-kartu { padding: 16px 16px 14px; border-radius: 20px; }
+  .kutipan-kartu::after { font-size: 5rem; right: 12px; }
+  .kutipan-slide { padding: 12px 0 14px; }
+  .kutipan-slide blockquote { font-size: 1.08rem; }
+  .kutipan-panah { display: none; }
+}

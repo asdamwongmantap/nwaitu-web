@@ -7,6 +7,9 @@ import { KUNCI_SIMPAN } from './WidgetShalat';
 // berkas lama dan mengganggu hot reload.
 const AKTIF = process.env.NODE_ENV === 'production';
 
+// Tombol "Pasang aplikasi" disembunyikan sampai aplikasinya rilis. Ubah ke true untuk memunculkannya lagi.
+const TAMPILKAN_PASANG = false;
+
 const KUNCI_SIAP = 'nawaitu_offline_siap'; // kunci sinkron terakhir yang berhasil penuh
 const KUNCI_COBA = 'nawaitu_offline_coba'; // waktu percobaan terakhir yang belum penuh
 const ULANG_SETELAH = 30 * 60e3;
@@ -140,12 +143,12 @@ export function PanelPwa() {
   return (
     <div className="panel-pwa">
       {siap && <span className="muted kecil">✓ Jadwal shalat dan artikel tersimpan untuk dipakai offline.</span>}
-      {!terpasang && bisaPasang && (
+      {TAMPILKAN_PASANG && !terpasang && bisaPasang && (
         <button className="chip" type="button" onClick={pasang}>
           Pasang aplikasi
         </button>
       )}
-      {!terpasang && ios && <span className="muted kecil">Di iPhone/iPad: ketuk Bagikan, lalu “Tambah ke Layar Utama”.</span>}
+      {TAMPILKAN_PASANG && !terpasang && ios && <span className="muted kecil">Di iPhone/iPad: ketuk Bagikan, lalu “Tambah ke Layar Utama”.</span>}
     </div>
   );
 }

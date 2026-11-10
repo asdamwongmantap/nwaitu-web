@@ -2,10 +2,12 @@ import Link from 'next/link';
 import Cta from '@/components/Cta';
 import DaftarKajian from '@/components/DaftarKajian';
 import { IkonArtikel, IkonJadwal, IkonKajian, IkonTempat } from '@/components/Ikon';
+import KutipanSlider from '@/components/KutipanSlider';
 import TombolPoster from '@/components/TombolPoster';
 import Ubin from '@/components/Ubin';
 import WidgetShalat, { type DataJadwal } from '@/components/WidgetShalat';
 import { ayatHariIni, rujukanAyat } from '@/lib/ayat';
+import { kutipanHariIni } from '@/lib/kutipan';
 import { SLUG_BAWAAN, jadwalWilayah, wilayahDariSlug } from '@/lib/jadwal';
 import { muatKajian, type DataKajian } from '@/lib/kajian';
 import { artikel, situs } from '@/lib/situs';
@@ -25,6 +27,7 @@ async function jadwalBawaan(): Promise<DataJadwal | null> {
 export default async function Beranda() {
   const [jadwal, kajian, ayat] = await Promise.all([jadwalBawaan(), muatKajian().catch((): DataKajian | null => null), ayatHariIni()]);
   const dibuat = Date.now();
+  const kutipan = kutipanHariIni(dibuat);
   const ld = [
     { '@context': 'https://schema.org', '@type': 'WebSite', name: situs.nama, url: situs.url, inLanguage: 'id', description: situs.deskripsi },
     { '@context': 'https://schema.org', '@type': 'Organization', name: situs.nama, url: situs.url, logo: `${situs.url}/img/icon-512.png`, slogan: situs.tagline },
@@ -35,7 +38,7 @@ export default async function Beranda() {
       <WidgetShalat
         awal={jadwal}
         hariIniAwal={isoTanggal(jamDinding(7, dibuat))}
-        tumpuk={Boolean(ayat)}
+        tumpuk
         judul={
           <>
             <h1 className="brand">{situs.nama}</h1>
@@ -44,9 +47,10 @@ export default async function Beranda() {
         }
       />
       <main className="wrap">
-        {ayat && (
-          <section className="ayat-bagian" aria-labelledby="judul-ayat">
-            <div className="kartu-ayat">
+        <div className="ayat-bagian">
+          {ayat && (
+            <section className="ayat-kolom" aria-labelledby="judul-ayat">
+              <div className="kartu-ayat">
               <div className="ayat-kepala">
                 <h2 id="judul-ayat">Ayat hari ini</h2>
                 <TombolPoster
@@ -65,9 +69,11 @@ export default async function Beranda() {
                   Teks dan terjemahan: Kemenag RI via EQuran.id
                 </figcaption>
               </figure>
-            </div>
-          </section>
-        )}
+              </div>
+            </section>
+          )}
+          <KutipanSlider data={kutipan} />
+        </div>
 
         <section className="jelajah" aria-label="Menu utama">
           <Ubin href="/jadwal-sholat/" ikon={<IkonJadwal />} judul="Jadwal Shalat" ket="500+ kota dan kabupaten, lengkap sebulan penuh." />

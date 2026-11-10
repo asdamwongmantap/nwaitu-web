@@ -28,7 +28,8 @@ export type IsiPoster =
       wilayah: string | null;
       path: string;
     }
-  | { jenis: 'ayat'; arab: string; terjemah: string; rujukan: string; tema?: TemaAyat; path: string };
+  | { jenis: 'ayat'; arab: string; terjemah: string; rujukan: string; tema?: TemaAyat; path: string }
+  | { jenis: 'kutipan'; teks: string; sumber: string; tema?: TemaAyat; path: string };
 
 export type Format = 'kotak' | 'story';
 export const UKURAN: Record<Format, [number, number]> = { kotak: [1080, 1080], story: [1080, 1920] };
@@ -39,7 +40,7 @@ const TEKS = '#f2f8f5';
 const REDUP = '#aecbbe';
 const EMAS = '#e8c35a';
 
-const KATEGORI: Record<IsiPoster['jenis'], string> = { sholat: 'Jadwal Shalat', kajian: 'Info Kajian', ayat: 'Ayat Hari Ini' };
+const KATEGORI: Record<IsiPoster['jenis'], string> = { sholat: 'Jadwal Shalat', kajian: 'Info Kajian', ayat: 'Ayat Hari Ini', kutipan: 'Kutipan Hari Ini' };
 const URUT_STORY: Waktu[] = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'];
 
 // ---------- Teks untuk dibagikan bersama gambar ----------
@@ -64,11 +65,12 @@ export function teksBagikan(isi: IsiPoster, url: string) {
       .filter((x) => x !== null)
       .join('\n');
   }
+  if (isi.jenis === 'kutipan') return `“${isi.teks}”${isi.sumber ? `\n— ${isi.sumber}` : ''}\n\n${url}`;
   return `${isi.arab}\n\n“${isi.terjemah}”\n(${isi.rujukan})\n\n${url}`;
 }
 
 export function namaBerkas(isi: IsiPoster, format: Format) {
-  const dasar = isi.jenis === 'sholat' ? `jadwal-shalat-${isi.kota}` : isi.jenis === 'kajian' ? `kajian-${isi.judul}` : `ayat-${isi.rujukan}`;
+  const dasar = isi.jenis === 'sholat' ? `jadwal-shalat-${isi.kota}` : isi.jenis === 'kajian' ? `kajian-${isi.judul}` : isi.jenis === 'kutipan' ? `kutipan-${isi.sumber}-${isi.teks.slice(0, 24)}` : `ayat-${isi.rujukan}`;
   const slug = dasar.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
   return `nawaitu-${slug}-${format}.png`;
 }
@@ -122,6 +124,17 @@ function susun(isi: IsiPoster, format: Format): { blok: Blok[]; tengah: boolean 
         ...(isi.berikutnya ? [{ t: 'info', label: 'Berikutnya', isi: isi.berikutnya, maks: 1, jarak: 30 } as Blok] : []),
         { t: 'info', label: 'Tempat', isi: isi.wilayah ? `${isi.tempat}\n${isi.wilayah}` : isi.tempat, maks: 3, jarak: 40 },
         { t: 'teks', isi: 'Jadwal bisa berubah. Cek sumber sebelum berangkat.', px: 26, warna: REDUP, maks: 2 },
+      ],
+    };
+  }
+  if (isi.jenis === 'kutipan') {
+    return {
+      tengah: true,
+      blok: [
+        { t: 'teks', isi: `“${isi.teks}”`, px: 62, berat: 700, lh: 1.5, maks: 9, jarak: 34 },
+        ...(isi.sumber
+          ? [{ t: 'garis', jarak: 28 } as Blok, { t: 'teks', isi: isi.sumber, px: 34, berat: 700, warna: EMAS, spasi: 1, maks: 2 } as Blok]
+          : []),
       ],
     };
   }
@@ -325,7 +338,7 @@ export function gambarPoster(cv: HTMLCanvasElement, isi: IsiPoster, format: Form
   const bawah = format === 'story' ? 200 : 64;
 
   // Poster ayat dibuat bersih: merek kecil dan samar, tanpa alamat situs di bawah.
-  const polos = isi.jenis === 'ayat';
+  const polos = isi.jenis === 'ayat' || isi.jenis === 'kutipan';
   if (polos) latarAyat(c, W, H, isi.tema ?? 'fajar');
   else latar(c, W, H);
 
@@ -390,7 +403,7 @@ export function gambarPoster(cv: HTMLCanvasElement, isi: IsiPoster, format: Form
     if ((total <= tinggi && hasil.every((u) => u.w <= k.lebar + 1)) || s <= 0.5) break;
   }
   let y = y0 + Math.max(0, (tinggi - total) / 2);
-  if (isi.jenis === 'ayat') {
+  if (polos) {
     c.shadowColor = 'rgba(0,0,0,.55)';
     c.shadowBlur = 18;
     c.shadowOffsetY = 2;
