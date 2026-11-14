@@ -1,4 +1,5 @@
 import { situs } from '@/lib/situs';
+import { IkonUnduh } from './Ikon';
 
 export default function Cta() {
   return (
@@ -16,6 +17,7 @@ export default function Cta() {
       </div>
       {situs.playStore && (
         <a className="tombol emas" href={situs.playStore} rel="noopener">
+          <IkonUnduh />
           Unduh di Google Play
         </a>
       )}

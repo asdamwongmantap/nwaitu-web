@@ -3,6 +3,7 @@ import Cta from '@/components/Cta';
 import DaftarKajian from '@/components/DaftarKajian';
 import { IkonArtikel, IkonJadwal, IkonKajian, IkonTempat } from '@/components/Ikon';
 import KutipanSlider from '@/components/KutipanSlider';
+import PromoApp from '@/components/PromoApp';
 import TombolPoster from '@/components/TombolPoster';
 import Ubin from '@/components/Ubin';
 import WidgetShalat, { type DataJadwal } from '@/components/WidgetShalat';
@@ -41,6 +42,7 @@ export default async function Beranda() {
         tumpuk
         judul={
           <>
+            <PromoApp />
             <h1 className="brand">{situs.nama}</h1>
             <p className="tagline">{situs.tagline}</p>
           </>

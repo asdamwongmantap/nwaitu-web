@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { IkonUnduh } from '@/components/Ikon';
 import Menu from '@/components/Menu';
 import Pwa, { PanelPwa } from '@/components/Pwa';
 import TombolTema from '@/components/TombolTema';
@@ -51,6 +52,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <img src="/img/logo.png" alt="" width={22} height={28} />
               {situs.nama}
             </Link>
+            {situs.playStore && (
+              <a className="tombol-unduh" href={situs.playStore} rel="noopener" aria-label={`Unduh aplikasi ${situs.nama} di Google Play`}>
+                <IkonUnduh />
+                <span className="tu-label">
+                  Unduh<span className="tu-panjang"> aplikasi</span>
+                </span>
+              </a>
+            )}
             <TombolTema />
             <Menu />
           </div>
@@ -71,6 +80,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/masjid-terdekat/">Masjid & Sekolah</Link>
               <Link href="/kajian/">Kajian</Link>
               <Link href="/artikel/">Artikel</Link>
+              {situs.playStore && (
+                <a href={situs.playStore} rel="noopener">
+                  Aplikasi Android
+                </a>
+              )}
             </nav>
             <div className="kaki-catatan">
               <p>

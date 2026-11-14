@@ -9,7 +9,8 @@ export const situs = {
   // isi NEXT_PUBLIC_SITE_URL bila memakai domain sendiri.
   url: (process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")).replace(/\/$/, ""),
-  playStore: "", // tempel tautan Play Store bila sudah ada
+  // Tautan aplikasi Android. Kosongkan untuk menyembunyikan semua tombol unduh (header, banner beranda, CTA, kaki).
+  playStore: "https://play.google.com/store/apps/details?id=com.wongmantap.nawaitu",
 };
 
 export type Artikel = { slug: string; judul: string; ringkas: string; isi: string };

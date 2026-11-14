@@ -660,3 +660,39 @@ button.tombol.garis { border: 1px solid var(--hijau-2); }
   .kutipan-slide blockquote { font-size: 1.08rem; }
   .kutipan-panah { display: none; }
 }
+
+/* ====== Promosi aplikasi Android: tombol di header dan kartu di banner beranda ====== */
+.tombol-unduh { order: 2; flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; padding: 0 16px 0 12px; border-radius: 99px; font-weight: 700; font-size: .88rem; white-space: nowrap; text-decoration: none; color: #3a2c00; background: linear-gradient(160deg, #f6dc88, var(--emas-2) 55%, #d9aa3a); box-shadow: 0 10px 18px -12px rgba(232, 195, 90, .9); transition: transform .15s, filter .15s; }
+.tombol-unduh:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.tombol-unduh svg { width: 17px; height: 17px; flex: none; }
+/* Layar sedang: menu sudah memenuhi header, jadi tombol cukup ikonnya. */
+@media (min-width: 761px) and (max-width: 960px) {
+  .tombol-unduh { width: 38px; padding: 0; }
+  .tu-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+a.promo-app { display: flex; align-items: center; gap: 12px; width: fit-content; max-width: 100%; margin-bottom: 22px; padding: 7px 8px 7px 7px; border-radius: 18px; text-decoration: none; color: var(--on-hijau); background: rgba(255, 255, 255, .08); border: 1px solid rgba(232, 195, 90, .4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .15s, border-color .15s, transform .15s; }
+a.promo-app:hover { background: rgba(255, 255, 255, .14); border-color: rgba(232, 195, 90, .8); transform: translateY(-1px); }
+.promo-app img { flex: none; display: block; width: 40px; height: 40px; border-radius: 11px; box-shadow: 0 0 0 1px rgba(232, 195, 90, .4); }
+.pa-teks { display: grid; min-width: 0; line-height: 1.35; }
+.pa-teks b { font-size: .92rem; }
+.pa-teks > span { font-size: .8rem; color: var(--on-hijau-muted); }
+.pa-sempit { display: none; }
+.pa-aksi { flex: none; display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; padding: 8px 14px 8px 11px; border-radius: 99px; font-weight: 700; font-size: .86rem; color: #3a2c00; background: linear-gradient(160deg, #f6dc88, var(--emas-2) 55%, #d9aa3a); }
+.pa-aksi svg { width: 16px; height: 16px; }
+/* Kolom banner yang sempit (tablet dan ponsel): teks versi pendek, satu baris. */
+@media (max-width: 960px) {
+  .pa-teks > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pa-lebar { display: none; }
+  .pa-sempit { display: block; }
+}
+@media (max-width: 760px) {
+  .tombol-unduh { order: 0; height: 36px; padding: 0 14px 0 11px; font-size: .84rem; }
+  /* Di beranda kartu promosi sudah punya tombol unduh tepat di bawah header; cukup satu. */
+  body:has(.promo-app) .tombol-unduh { display: none; }
+  a.promo-app { width: auto; gap: 10px; margin-bottom: 14px; padding: 6px 7px 6px 6px; border-radius: 16px; }
+  .promo-app img { width: 36px; height: 36px; border-radius: 10px; }
+  .pa-teks b { font-size: .88rem; }
+  .pa-teks > span { font-size: .76rem; }
+  .pa-aksi { margin-left: auto; padding: 7px 13px 7px 10px; font-size: .84rem; }
+}
+@media (max-width: 400px) { .tu-panjang { display: none; } }

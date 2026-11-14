@@ -61,6 +61,13 @@ export const IkonOrang = () => (
     <path d="M5 20c.7-3.6 3.4-5.5 7-5.5s6.3 1.9 7 5.5" />
   </Dasar>
 );
+export const IkonUnduh = () => (
+  <Dasar>
+    <path d="M12 4v11" />
+    <path d="m7.5 11 4.5 4.5 4.5-4.5" />
+    <path d="M5 19.5h14" />
+  </Dasar>
+);
 
 /** Ikon tiap waktu shalat: fajar, terbit, siang, sore, terbenam, malam. */
 export function IkonWaktu({ k }: { k: Waktu }) {
