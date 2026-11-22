@@ -11,7 +11,7 @@ export const situs = {
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")).replace(/\/$/, ""),
   // Kode verifikasi Google Search Console (metode "Tag HTML"). Tempel HANYA isi content-nya, mis. dari
   // <meta name="google-site-verification" content="AbC123..." /> cukup tulis "AbC123...". Kosongkan bila
-  // verifikasi memakai record TXT di DNS DomaiNesia. Panduan lengkap: docs/panduan-seo.md
+  // verifikasi memakai record TXT di DNS DomaiNesia.
   verifikasiGoogle: "",
   // Tautan aplikasi Android. Kosongkan untuk menyembunyikan semua tombol unduh (header, banner beranda, CTA, kaki).
   playStore: "https://play.google.com/store/apps/details?id=com.wongmantap.nawaitu",
