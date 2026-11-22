@@ -4,11 +4,15 @@ export const situs = {
   nama: "Nawaitu",
   tagline: "Teman ibadah harian Anda",
   // Deskripsi beranda (meta description, idealnya 120-160 karakter).
-  deskripsi: "Nawaitu, teman ibadah harian Anda. Jadwal shalat (sholat) per kota, kajian islami, dan artikel. Aplikasi Android dengan adzan dan tracker puasa.",
+  deskripsi: "Jadwal sholat hari ini untuk 500+ kota di Indonesia (resmi Kemenag RI), jadwal kajian islam terdekat, masjid terdekat, dan artikel ibadah. Bisa offline.",
   // Alamat situs tanpa garis miring di akhir. Di Vercel terisi otomatis dari domain produksi;
   // isi NEXT_PUBLIC_SITE_URL bila memakai domain sendiri.
   url: (process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")).replace(/\/$/, ""),
+  // Kode verifikasi Google Search Console (metode "Tag HTML"). Tempel HANYA isi content-nya, mis. dari
+  // <meta name="google-site-verification" content="AbC123..." /> cukup tulis "AbC123...". Kosongkan bila
+  // verifikasi memakai record TXT di DNS DomaiNesia. Panduan lengkap: docs/panduan-seo.md
+  verifikasiGoogle: "",
   // Tautan aplikasi Android. Kosongkan untuk menyembunyikan semua tombol unduh (header, banner beranda, CTA, kaki).
   playStore: "https://play.google.com/store/apps/details?id=com.wongmantap.nawaitu",
 };

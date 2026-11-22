@@ -1,15 +1,15 @@
-import type { Metadata } from 'next';
 import CariSekitar from '@/components/CariSekitar';
 import Cta from '@/components/Cta';
 import { IkonTempat } from '@/components/Ikon';
 import KepalaHalaman from '@/components/KepalaHalaman';
+import { metaHalaman } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = metaHalaman({
   title: 'Masjid dan Sekolah Islam Terdekat',
   description:
     'Cari masjid, mushalla, sekolah Islam, madrasah, dan pondok pesantren terdekat dari lokasi Anda, lengkap dengan jarak dan petunjuk rute.',
-  alternates: { canonical: '/masjid-terdekat/' },
-};
+  path: '/masjid-terdekat/',
+});
 
 export default function HalamanSekitar() {
   return (

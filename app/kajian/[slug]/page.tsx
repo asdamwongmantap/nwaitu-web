@@ -8,6 +8,7 @@ import KepalaHalaman from '@/components/KepalaHalaman';
 import TombolPoster from '@/components/TombolPoster';
 import { idDariSlug, muatKajian } from '@/lib/kajian';
 import { berikutnya, jadwalTeks, keteranganJam, labelMode, labelPeserta } from '@/lib/kajian-util';
+import { metaHalaman, remahLd } from '@/lib/seo';
 import { situs } from '@/lib/situs';
 import { tanggalPanjang } from '@/lib/waktu';
 
@@ -32,11 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!r) return { title: 'Kajian tidak ditemukan', robots: { index: false } };
   const { k } = r;
   const tempat = [k.tempat, k.kabkota].filter(Boolean).join(', ');
-  return {
+  return metaHalaman({
     title: k.judul,
     description: `${k.ustadz.join(', ') || 'Kajian'} · ${jadwalTeks(k)} · ${tempat}.`.slice(0, 160),
-    alternates: { canonical: `/kajian/${k.slug}/` },
-  };
+    path: `/kajian/${k.slug}/`,
+  });
 }
 
 export default async function DetailKajian({ params }: Props) {
@@ -63,14 +64,20 @@ export default async function DetailKajian({ params }: Props) {
                 ? 'https://schema.org/MixedEventAttendanceMode'
                 : 'https://schema.org/OfflineEventAttendanceMode',
           performer: k.ustadz.map((name) => ({ '@type': 'Person', name })),
-          location: {
-            '@type': 'Place',
-            name: k.tempat,
-            address: { '@type': 'PostalAddress', streetAddress: k.alamat ?? undefined, addressLocality: k.kabkota ?? undefined, addressCountry: 'ID' },
-          },
-          organizer: { '@type': 'Organization', name: k.tempat },
+          // Kajian online tidak punya alamat fisik; schema.org memakai VirtualLocation untuk itu.
+          location:
+            k.mode === 'online'
+              ? { '@type': 'VirtualLocation', url: k.streaming ?? `${situs.url}/kajian/${k.slug}/` }
+              : {
+                  '@type': 'Place',
+                  name: k.tempat ?? k.kabkota ?? 'Indonesia',
+                  address: { '@type': 'PostalAddress', streetAddress: k.alamat ?? undefined, addressLocality: k.kabkota ?? undefined, addressRegion: k.provinsi ?? undefined, addressCountry: 'ID' },
+                },
+          ...(k.tempat && { organizer: { '@type': 'Organization', name: k.tempat } }),
+          url: `${situs.url}/kajian/${k.slug}/`,
         }
       : null;
+  const remah = remahLd([['Beranda', '/'], ['Kajian', '/kajian/'], [k.judul, `/kajian/${k.slug}/`]]);
 
   // Teks jadwal rutin dari sumber kadang diawali simbol atau "Waktu :"; rapikan khusus untuk chip di banner.
   const jadwalRingkas = jadwalTeks(k).replace(/^[^\p{L}\p{N}]+/u, '').replace(/^waktu\s*:\s*/i, '');
@@ -79,7 +86,7 @@ export default async function DetailKajian({ params }: Props) {
 
   return (
     <>
-      {ld && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} />}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld ? [ld, remah] : remah).replace(/</g, '\\u003c') }} />
       <KepalaHalaman
         kembali={{ href: '/kajian/', label: 'Semua kajian' }}
         label="Kajian"

@@ -11,6 +11,13 @@ const config: NextConfig = {
   async headers() {
     return [
       {
+        // Alamat *.vercel.app (produksi maupun preview) berisi salinan situs yang sama persis. Jangan diindeks,
+        // supaya Google hanya menampilkan domain utama dan tidak menganggapnya konten duplikat.
+        source: '/:path*',
+        has: [{ type: 'host', value: '(?<sub>.*)\\.vercel\\.app' }],
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      {
         // Service worker tidak boleh di-cache peramban, supaya pembaruan langsung dipakai.
         source: '/sw.js',
         headers: [

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Cta from '@/components/Cta';
 import { IkonArtikel } from '@/components/Ikon';
 import KepalaHalaman from '@/components/KepalaHalaman';
+import { metaHalaman, remahLd } from '@/lib/seo';
 import { artikel, menitBaca, situs } from '@/lib/situs';
 
 export const dynamicParams = false;
@@ -17,19 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const a = artikel.find((x) => x.slug === slug);
   if (!a) return {};
-  return {
-    title: a.judul,
-    description: a.ringkas,
-    alternates: { canonical: `/artikel/${a.slug}/` },
-    openGraph: { type: 'article' },
-  };
+  return metaHalaman({ title: a.judul, description: a.ringkas, path: `/artikel/${a.slug}/`, type: 'article' });
 }
 
 export default async function DetailArtikel({ params }: Props) {
   const { slug } = await params;
   const a = artikel.find((x) => x.slug === slug);
   if (!a) notFound();
-  const ld = {
+  const ld = [{
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: a.judul,
@@ -38,7 +34,7 @@ export default async function DetailArtikel({ params }: Props) {
     mainEntityOfPage: `${situs.url}/artikel/${a.slug}/`,
     image: `${situs.url}/img/og-image.png`,
     publisher: { '@type': 'Organization', name: situs.nama, logo: { '@type': 'ImageObject', url: `${situs.url}/img/icon-512.png` } },
-  };
+  }, remahLd([['Beranda', '/'], ['Artikel', '/artikel/'], [a.judul, `/artikel/${a.slug}/`]])];
   const lainnya = artikel.filter((x) => x.slug !== a.slug);
   return (
     <>

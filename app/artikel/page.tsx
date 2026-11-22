@@ -1,15 +1,15 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import Cta from '@/components/Cta';
 import { IkonArtikel, IkonJadwal } from '@/components/Ikon';
 import KepalaHalaman from '@/components/KepalaHalaman';
+import { metaHalaman } from '@/lib/seo';
 import { artikel, menitBaca, situs } from '@/lib/situs';
 
-export const metadata: Metadata = {
-  title: 'Artikel',
-  description: `Artikel ringkas seputar ibadah sehari-hari: niat, tata cara, dan doa. Teman ibadah harian Anda di ${situs.nama}.`,
-  alternates: { canonical: '/artikel/' },
-};
+export const metadata = metaHalaman({
+  title: 'Artikel Ibadah: Niat, Tata Cara, dan Doa',
+  description: `Artikel ringkas seputar ibadah sehari-hari: niat sholat, rukun wudhu, tata cara, dan doa. Teman ibadah harian Anda di ${situs.nama}.`,
+  path: '/artikel/',
+});
 
 export default function HalamanArtikel() {
   return (

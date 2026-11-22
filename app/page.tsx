@@ -9,12 +9,20 @@ import Ubin from '@/components/Ubin';
 import WidgetShalat, { type DataJadwal } from '@/components/WidgetShalat';
 import { ayatHariIni, rujukanAyat } from '@/lib/ayat';
 import { kutipanHariIni } from '@/lib/kutipan';
-import { SLUG_BAWAAN, jadwalWilayah, wilayahDariSlug } from '@/lib/jadwal';
+import { KOTA_POPULER, SLUG_BAWAAN, daftarWilayah, jadwalWilayah, wilayahDariSlug } from '@/lib/jadwal';
 import { muatKajian, type DataKajian } from '@/lib/kajian';
+import { metaHalaman } from '@/lib/seo';
 import { artikel, situs } from '@/lib/situs';
 import { isoTanggal, jamDinding } from '@/lib/waktu';
 
 export const revalidate = 21600;
+
+export const metadata = metaHalaman({
+  // Judul beranda memuat kata kunci utama; tanpa template "| Nawaitu" karena nama sudah di depan.
+  title: { absolute: `${situs.nama}: Jadwal Sholat Hari Ini, Kajian & Artikel Islam` },
+  description: situs.deskripsi,
+  path: '/',
+});
 
 async function jadwalBawaan(): Promise<DataJadwal | null> {
   try {
@@ -26,7 +34,13 @@ async function jadwalBawaan(): Promise<DataJadwal | null> {
 }
 
 export default async function Beranda() {
-  const [jadwal, kajian, ayat] = await Promise.all([jadwalBawaan(), muatKajian().catch((): DataKajian | null => null), ayatHariIni()]);
+  const [jadwal, kajian, ayat, semuaWilayah] = await Promise.all([
+    jadwalBawaan(),
+    muatKajian().catch((): DataKajian | null => null),
+    ayatHariIni(),
+    daftarWilayah().catch(() => []),
+  ]);
+  const kotaPopuler = KOTA_POPULER.flatMap((slug) => semuaWilayah.filter((w) => w.slug === slug));
   const dibuat = Date.now();
   const kutipan = kutipanHariIni(dibuat);
   const ld = [
@@ -83,6 +97,22 @@ export default async function Beranda() {
           <Ubin href="/kajian/" ikon={<IkonKajian />} judul="Kajian" ket="Pemateri, waktu, lokasi, dan tautan sumber." />
           <Ubin href="/artikel/" ikon={<IkonArtikel />} judul="Artikel" ket="Niat, tata cara, dan doa sehari-hari." />
         </section>
+
+        {kotaPopuler.length > 0 && (
+          <>
+            <div className="kepala-bagian bagian">
+              <h2>Jadwal sholat kota populer</h2>
+              <Link href="/jadwal-sholat/">Semua kota →</Link>
+            </div>
+            <nav className="chips" aria-label="Jadwal sholat kota populer">
+              {kotaPopuler.map((w) => (
+                <Link key={w.slug} className="chip" href={`/jadwal-sholat/${w.slug}/`}>
+                  {w.namaTampil}
+                </Link>
+              ))}
+            </nav>
+          </>
+        )}
 
         <div className="kepala-bagian bagian">
           <h2>Kajian terdekat</h2>

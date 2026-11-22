@@ -16,7 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: u('/masjid-terdekat/'), changeFrequency: 'monthly', priority: 0.7 },
     { url: u('/kajian/'), lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: u('/artikel/'), changeFrequency: 'weekly', priority: 0.5 },
-    ...wilayah.map((w) => ({ url: u(`/jadwal-sholat/${w.slug}/`), changeFrequency: 'daily' as const, priority: 0.7 })),
+    // Halaman kota berubah setiap hari (jadwal "hari ini"), jadi lastmod-nya hari ini juga.
+    ...wilayah.map((w) => ({ url: u(`/jadwal-sholat/${w.slug}/`), lastModified: now, changeFrequency: 'daily' as const, priority: 0.7 })),
     ...(kajian?.kajian ?? [])
       .filter((k) => berikutnya(k, now.getTime(), kajian!.acuan))
       .map((k) => ({ url: u(`/kajian/${k.slug}/`), changeFrequency: 'weekly' as const, priority: 0.5 })),

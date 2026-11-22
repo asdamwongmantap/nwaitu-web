@@ -6,6 +6,7 @@ import PilihKota from '@/components/PilihKota';
 import JadwalBulanan from '@/components/JadwalBulanan';
 import WidgetShalat from '@/components/WidgetShalat';
 import { KOTA_POPULER, daftarWilayah, jadwalWilayah, wilayahDariSlug } from '@/lib/jadwal';
+import { remahLd } from '@/lib/seo';
 import { isoTanggal, jamDinding } from '@/lib/waktu';
 
 // Isi halaman jadwal satu kota. Dipakai oleh /jadwal-sholat/ (kota bawaan: Jakarta, dengan menu
@@ -28,14 +29,9 @@ export default async function JadwalKota({ slug, indeks = false }: { slug: strin
   });
   const tetangga = semua.filter((x) => x.provinsi === w.provinsi && x.slug !== w.slug);
 
-  const remah = indeks
-    ? [['Beranda', '/'], ['Jadwal Shalat', '/jadwal-sholat/']]
-    : [['Beranda', '/'], ['Jadwal Shalat', '/jadwal-sholat/'], [w.namaTampil, `/jadwal-sholat/${w.slug}/`]];
-  const ld = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: remah.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: u })),
-  };
+  const remah: [string, string][] = [['Beranda', '/'], ['Jadwal Sholat', '/jadwal-sholat/']];
+  if (!indeks) remah.push([w.namaTampil, `/jadwal-sholat/${w.slug}/`]);
+  const ld = remahLd(remah);
 
   return (
     <>
@@ -48,11 +44,11 @@ export default async function JadwalKota({ slug, indeks = false }: { slug: strin
         judul={
           indeks ? (
             <>
-              <h1 className="judul-kota">Jadwal Shalat Indonesia</h1>
+              <h1 className="judul-kota">Jadwal Sholat Indonesia</h1>
               <p className="tagline">Menampilkan {w.namaTampil}. Pilih kota lain lewat menu di bawah.</p>
             </>
           ) : (
-            <h1 className="judul-kota">Jadwal Shalat {w.namaTampil}</h1>
+            <h1 className="judul-kota">Jadwal Sholat {w.namaTampil}</h1>
           )
         }
       />

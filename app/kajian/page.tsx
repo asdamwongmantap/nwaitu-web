@@ -1,18 +1,18 @@
-import type { Metadata } from 'next';
 import Cta from '@/components/Cta';
 import DaftarKajian from '@/components/DaftarKajian';
 import { IkonKajian } from '@/components/Ikon';
 import KepalaHalaman from '@/components/KepalaHalaman';
 import { REPO_KAJIAN, muatKajian } from '@/lib/kajian';
+import { metaHalaman } from '@/lib/seo';
 
 export const revalidate = 21600;
 
-export const metadata: Metadata = {
+export const metadata = metaHalaman({
   title: 'Jadwal Kajian Islam Terdekat',
   description:
     'Jadwal kajian islami terbaru di berbagai kota di Indonesia: pemateri, waktu, lokasi, kajian rutin dan online. Diperbarui otomatis setiap hari.',
-  alternates: { canonical: '/kajian/' },
-};
+  path: '/kajian/',
+});
 
 const fmtData = (iso: string) =>
   new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Jakarta' }).format(new Date(iso)) + ' WIB';

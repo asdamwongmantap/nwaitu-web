@@ -6,6 +6,7 @@ import Menu from '@/components/Menu';
 import Pwa, { PanelPwa } from '@/components/Pwa';
 import TombolTema from '@/components/TombolTema';
 import { amiri, jakarta } from '@/lib/fonts';
+import { OG_DASAR } from '@/lib/seo';
 import { artikel, situs } from '@/lib/situs';
 import './globals.css';
 
@@ -14,13 +15,13 @@ export const metadata: Metadata = {
   title: { default: `${situs.nama}: ${situs.tagline}`, template: `%s | ${situs.nama}` },
   description: situs.deskripsi,
   applicationName: situs.nama,
-  openGraph: {
-    siteName: situs.nama,
-    locale: 'id_ID',
-    type: 'website',
-    images: [{ url: '/img/og-image.png', width: 1024, height: 500, alt: `${situs.nama}: ${situs.tagline}` }],
-  },
+  openGraph: { ...OG_DASAR, type: 'website' },
   twitter: { card: 'summary_large_image' },
+  // Verifikasi Google Search Console (metode tag HTML): isi `verifikasiGoogle` di lib/situs.ts
+  // (atau env GOOGLE_SITE_VERIFICATION). Tidak perlu bila verifikasi memakai record TXT di DNS.
+  ...((situs.verifikasiGoogle || process.env.GOOGLE_SITE_VERIFICATION) && {
+    verification: { google: situs.verifikasiGoogle || process.env.GOOGLE_SITE_VERIFICATION },
+  }),
   appleWebApp: { capable: true, title: situs.nama, statusBarStyle: 'black-translucent' },
   icons: {
     icon: [
