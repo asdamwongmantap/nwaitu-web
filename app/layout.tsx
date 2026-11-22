@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { Analytics } from '@vercel/analytics/next';
 import { IkonUnduh } from '@/components/Ikon';
 import Menu from '@/components/Menu';
 import Pwa, { PanelPwa } from '@/components/Pwa';
@@ -96,6 +97,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </footer>
+        {/* Vercel Web Analytics: hitung kunjungan halaman; tidak aktif saat `next dev`. */}
+        <Analytics />
       </body>
     </html>
   );
