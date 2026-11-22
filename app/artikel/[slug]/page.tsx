@@ -31,11 +31,12 @@ export default async function DetailArtikel({ params }: Props) {
     headline: a.judul,
     description: a.ringkas,
     inLanguage: 'id',
+    ...(a.terbit && { datePublished: a.terbit, dateModified: a.terbit }),
     mainEntityOfPage: `${situs.url}/artikel/${a.slug}/`,
     image: `${situs.url}/img/og-image.png`,
     publisher: { '@type': 'Organization', name: situs.nama, logo: { '@type': 'ImageObject', url: `${situs.url}/img/icon-512.png` } },
   }, remahLd([['Beranda', '/'], ['Artikel', '/artikel/'], [a.judul, `/artikel/${a.slug}/`]])];
-  const lainnya = artikel.filter((x) => x.slug !== a.slug);
+  const lainnya = artikel.filter((x) => x.slug !== a.slug).slice(0, 4);
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} />

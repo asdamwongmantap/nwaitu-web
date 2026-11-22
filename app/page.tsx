@@ -131,7 +131,8 @@ export default async function Beranda() {
           <Link href="/artikel/">Semua artikel →</Link>
         </div>
         <div className="grid">
-          {artikel.map((a) => (
+          {/* Empat artikel terbaru; selebihnya di /artikel/. */}
+          {artikel.slice(0, 4).map((a) => (
             <Link key={a.slug} className="card kartu-artikel" href={`/artikel/${a.slug}/`}>
               <span className="ubin-ikon kecil">
                 <IkonArtikel />
