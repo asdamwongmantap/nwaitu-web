@@ -13,6 +13,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "kutipan-json": "github:asdamwongmantap/kutipan-json#v1.1.0",
     "next": "^16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

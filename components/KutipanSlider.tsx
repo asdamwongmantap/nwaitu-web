@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TombolPoster from '@/components/TombolPoster';
-import { sumberKutipan, type Kutipan } from '@/lib/kutipan';
+import { sumberKutipan, type Kutipan } from '@/lib/kutipan-format';
 
 /** Kartu "Kutipan hari ini": geser menyamping, tombol bagikan mengikuti kutipan yang tampil. */
 export default function KutipanSlider({ data }: { data: Kutipan[] }) {
