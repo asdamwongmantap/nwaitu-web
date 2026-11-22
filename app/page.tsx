@@ -11,6 +11,7 @@ import { ayatHariIni, rujukanAyat } from '@/lib/ayat';
 import { kutipanHariIni } from '@/lib/kutipan';
 import { KOTA_POPULER, SLUG_BAWAAN, daftarWilayah, jadwalWilayah, wilayahDariSlug } from '@/lib/jadwal';
 import { muatKajian, type DataKajian } from '@/lib/kajian';
+import { kategoriArtikel } from '@/lib/artikel';
 import { metaHalaman } from '@/lib/seo';
 import { artikel, situs } from '@/lib/situs';
 import { isoTanggal, jamDinding } from '@/lib/waktu';
@@ -137,6 +138,7 @@ export default async function Beranda() {
               <span className="ubin-ikon kecil">
                 <IkonArtikel />
               </span>
+              <span className="ka-tag">{kategoriArtikel(a)}</span>
               <h3>{a.judul}</h3>
               <div className="muted">{a.ringkas}</div>
               <span className="baca-lanjut">Baca artikel →</span>

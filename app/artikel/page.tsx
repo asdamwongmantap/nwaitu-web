@@ -3,6 +3,7 @@ import Cta from '@/components/Cta';
 import { IkonArtikel, IkonJadwal } from '@/components/Ikon';
 import KepalaHalaman from '@/components/KepalaHalaman';
 import { metaHalaman } from '@/lib/seo';
+import { kategoriArtikel } from '@/lib/artikel';
 import { artikel, menitBaca, situs } from '@/lib/situs';
 
 export const metadata = metaHalaman({
@@ -29,6 +30,7 @@ export default function HalamanArtikel() {
               <span className="ubin-ikon">
                 <IkonArtikel />
               </span>
+              <span className="ka-tag">{kategoriArtikel(a)}</span>
               <h2>{a.judul}</h2>
               <p className="muted">{a.ringkas}</p>
               <span className="artikel-kaki">
