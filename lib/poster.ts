@@ -28,6 +28,7 @@ export type IsiPoster =
       wilayah: string | null;
       path: string;
     }
+  | { jenis: 'artikel'; judul: string; ringkas: string; kategori: string; menit: number; path: string }
   | { jenis: 'ayat'; arab: string; terjemah: string; rujukan: string; tema?: TemaAyat; path: string }
   | { jenis: 'kutipan'; teks: string; sumber: string; tema?: TemaAyat; path: string };
 
@@ -40,7 +41,7 @@ const TEKS = '#f2f8f5';
 const REDUP = '#aecbbe';
 const EMAS = '#e8c35a';
 
-const KATEGORI: Record<IsiPoster['jenis'], string> = { sholat: 'Jadwal Shalat', kajian: 'Info Kajian', ayat: 'Ayat Hari Ini', kutipan: 'Kutipan Hari Ini' };
+const KATEGORI: Record<IsiPoster['jenis'], string> = { sholat: 'Jadwal Shalat', kajian: 'Info Kajian', ayat: 'Ayat Hari Ini', kutipan: 'Kutipan Hari Ini', artikel: 'Artikel' };
 const URUT_STORY: Waktu[] = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'];
 
 // ---------- Teks untuk dibagikan bersama gambar ----------
@@ -65,12 +66,13 @@ export function teksBagikan(isi: IsiPoster, url: string) {
       .filter((x) => x !== null)
       .join('\n');
   }
+  if (isi.jenis === 'artikel') return `*${isi.judul}*\n\n${isi.ringkas}\n\nBaca selengkapnya: ${url}`;
   if (isi.jenis === 'kutipan') return `“${isi.teks}”${isi.sumber ? `\n— ${isi.sumber}` : ''}\n\n${url}`;
   return `${isi.arab}\n\n“${isi.terjemah}”\n(${isi.rujukan})\n\n${url}`;
 }
 
 export function namaBerkas(isi: IsiPoster, format: Format) {
-  const dasar = isi.jenis === 'sholat' ? `jadwal-shalat-${isi.kota}` : isi.jenis === 'kajian' ? `kajian-${isi.judul}` : isi.jenis === 'kutipan' ? `kutipan-${isi.sumber}-${isi.teks.slice(0, 24)}` : `ayat-${isi.rujukan}`;
+  const dasar = isi.jenis === 'sholat' ? `jadwal-shalat-${isi.kota}` : isi.jenis === 'kajian' ? `kajian-${isi.judul}` : isi.jenis === 'artikel' ? `artikel-${isi.judul}` : isi.jenis === 'kutipan' ? `kutipan-${isi.sumber}-${isi.teks.slice(0, 24)}` : `ayat-${isi.rujukan}`;
   const slug = dasar.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
   return `nawaitu-${slug}-${format}.png`;
 }
@@ -87,7 +89,21 @@ type Blok =
 type Konteks = { c: CanvasRenderingContext2D; huruf: Huruf; x: number; lebar: number; tengah: boolean };
 type Terukur = { h: number; w: number; gambar: (y: number) => void };
 
-function susun(isi: IsiPoster, format: Format): { blok: Blok[]; tengah: boolean } {
+function susun(isi: IsiPoster, format: Format, host: string): { blok: Blok[]; tengah: boolean } {
+  if (isi.jenis === 'artikel') {
+    const story = format === 'story';
+    return {
+      tengah: false,
+      blok: [
+        { t: 'teks', isi: isi.kategori, px: 26, berat: 700, warna: EMAS, spasi: 3, kapital: true, maks: 1, jarak: 16 },
+        { t: 'teks', isi: isi.judul, px: 74, berat: 800, lh: 1.18, maks: story ? 6 : 4, jarak: 30 },
+        { t: 'garis', jarak: 30 },
+        { t: 'teks', isi: isi.ringkas, px: 38, berat: 500, warna: REDUP, lh: 1.5, maks: story ? 8 : 4, jarak: 30 },
+        { t: 'teks', isi: `${isi.menit} menit baca`, px: 28, berat: 600, warna: EMAS, maks: 1, jarak: 44 },
+        { t: 'info', label: 'Baca selengkapnya', isi: `${host}${isi.path.replace(/\/$/, '')}`, maks: 3 },
+      ],
+    };
+  }
   if (isi.jenis === 'sholat') {
     const story = format === 'story';
     return {
@@ -390,7 +406,7 @@ export function gambarPoster(cv: HTMLCanvasElement, isi: IsiPoster, format: Form
   }
 
   // Isi: perkecil sampai muat di antara kepala dan kaki, lalu letakkan di tengah.
-  const { blok, tengah } = susun(isi, format);
+  const { blok, tengah } = susun(isi, format, host);
   const k: Konteks = { c, huruf, x: P, lebar: W - 2 * P, tengah };
   const y0 = atas + tinggiLogo + (polos ? 56 : 64);
   const tinggi = (polos ? H - bawah - 24 : kakiY - 70 - 56) - y0;

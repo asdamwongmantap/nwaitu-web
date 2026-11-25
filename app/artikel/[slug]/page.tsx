@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BagikanArtikel from '@/components/BagikanArtikel';
 import Cta from '@/components/Cta';
+import TombolPoster from '@/components/TombolPoster';
 import { IkonJadwal } from '@/components/Ikon';
 import { DaftarIsi, ProgresBaca } from '@/components/PemanduBaca';
 import { kategoriArtikel, siapkanIsi, tanggalTerbit } from '@/lib/artikel';
@@ -52,6 +53,8 @@ export default async function DetailArtikel({ params }: Props) {
     },
     remahLd([['Beranda', '/'], ['Artikel', '/artikel/'], [a.judul, path]]),
   ];
+
+  const isiPoster = { jenis: 'artikel', judul: a.judul, ringkas: a.ringkas, kategori, menit: menitBaca(a), path } as const;
 
   // Baca juga: utamakan kategori yang sama, lalu artikel terbaru lainnya.
   const lain = artikel.filter((x) => x.slug !== a.slug);
@@ -105,6 +108,9 @@ export default async function DetailArtikel({ params }: Props) {
                 <p>Menunjukkan jalan kebaikan berpahala seperti orang yang mengerjakannya (HR. Muslim).</p>
               </div>
               <BagikanArtikel varian="lengkap" judul={a.judul} ringkas={a.ringkas} path={path} />
+              <div className="bagikan-lengkap">
+                <TombolPoster className="bg-gambar" label="Buat gambar / story IG" isi={isiPoster} />
+              </div>
             </section>
           </article>
 

@@ -112,6 +112,15 @@ function DialogPoster({ isi, onTutup }: { isi: IsiPoster; onTutup: () => void })
     }
   }
 
+  async function salinTautan() {
+    try {
+      await navigator.clipboard.writeText(alamat);
+      setStatus('Tautan disalin. Di story Instagram, tambahkan stiker Tautan lalu tempel.');
+    } catch {
+      setStatus('Tautan tidak dapat disalin.');
+    }
+  }
+
   async function salin() {
     try {
       await navigator.clipboard.writeText(teksBagikan(isi, alamat));
@@ -167,12 +176,19 @@ function DialogPoster({ isi, onTutup }: { isi: IsiPoster; onTutup: () => void })
           <a className="tombol garis" href={`https://wa.me/?text=${encodeURIComponent(teksBagikan(isi, alamat))}`} target="_blank" rel="noopener">
             Kirim teks ke WhatsApp
           </a>
+          {isi.jenis === 'artikel' && (
+            <button className="tombol garis" type="button" onClick={salinTautan}>
+              Salin tautan (stiker IG)
+            </button>
+          )}
           <button className="tombol garis" type="button" onClick={salin}>
             Salin teks
           </button>
           <p className="muted kecil" role="status">
             {status ??
-              (bisaBagikan
+              (isi.jenis === 'artikel' && format === 'story'
+                ? 'Untuk story IG: unggah gambar, lalu tambahkan stiker Tautan dan tempel tautan dari tombol "Salin tautan".'
+                : bisaBagikan
                 ? 'Pilih WhatsApp atau Instagram dari menu bagikan.'
                 : 'Unduh gambar, lalu unggah dari galeri ke WhatsApp atau Instagram.')}
           </p>
